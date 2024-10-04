@@ -19,26 +19,33 @@
             overflow: hidden;
         }
 
-        /* Spezifische Canvas-Einstellungen für das Querformat */
+        /* Portrait Mode für das Canvas */
         #unity-canvas {
-            width: 1920px;
-            height: 1080px;
-            background: #231F20;
-        }
-
-        /* Mobile Optimierung */
-        @media (max-width: 1920px) {
-            #unity-canvas {
-                width: 100vw;
-                height: calc(100vw * 9 / 16); /* Berechne Höhe basierend auf dem 16:9-Verhältnis */
-            }
+            aspect-ratio: 9 / 16; /* Portrait-Verhältnis */
+            width: 100%;
+            height: auto;
         }
     </style>
 </head>
 <body>
-    <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <canvas id="unity-canvas" width="720" height="1280" tabindex="-1"></canvas>
     <script src="Build/CloudJumperNew.loader.js"></script>
     <script>
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+            // Mobile device style: fill the whole browser client area with the game canvas:
+            var meta = document.createElement('meta');
+            meta.name = 'viewport';
+            meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+            document.getElementsByTagName('head')[0].appendChild(meta);
+
+            var canvas = document.querySelector("#unity-canvas");
+            canvas.style.width = "100%";
+            canvas.style.height = "100%";
+            canvas.style.position = "fixed";
+
+            document.body.style.textAlign = "left";
+        }
+
         createUnityInstance(document.querySelector("#unity-canvas"), {
             arguments: [],
             dataUrl: "Build/CloudJumperNew.data",
@@ -48,8 +55,8 @@
             companyName: "TouchScreenTitan",
             productName: "Cloudjumper2",
             productVersion: "1.0",
-            // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
-            // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+            matchWebGLToCanvasSize: false, // Separat WebGL-Rendergröße und DOM-Größe kontrollieren
+            devicePixelRatio: 1, // Verhindert niedrige DPI auf Displays mit hoher Auflösung
         });
     </script>
 </body>
